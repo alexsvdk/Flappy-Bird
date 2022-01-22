@@ -1,7 +1,10 @@
 package ru.a1exs.flappybird;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -10,8 +13,10 @@ import androidx.annotation.NonNull;
 
 public class GameEngine implements View.OnClickListener, SurfaceHolder.Callback {
 
-    final private GameEngineTicker ticker = new GameEngineTicker();
+    private final GameEngineTicker ticker = new GameEngineTicker();
+    private final GameModel gameModel = new GameModel();
     private final BitmapHolder bitmapHolder;
+    private final Paint paint = new Paint();
     private SurfaceHolder holder;
 
     public GameEngine(BitmapHolder bitmapHolder) {
@@ -28,21 +33,52 @@ public class GameEngine implements View.OnClickListener, SurfaceHolder.Callback 
             return;
         }
         final Canvas canvas = holder.lockCanvas();
+        final GameState gameState = gameModel.getCurrentState();
 
-        Paint paint = new Paint();
-        canvas.drawBitmap(bitmapHolder.birdMid, 400, 400, paint);
+        canvas.drawColor(Color.BLACK);
+
+        drawBird(canvas, gameState);
+
 
         holder.unlockCanvasAndPost(canvas);
     }
 
+    private void drawBird(Canvas canvas, GameState gameState) {
+        Bitmap bird = null;
+
+        switch (gameState.getBirdFlap()) {
+            case UP:
+                bird = bitmapHolder.birdUp;
+                break;
+            case MID:
+                bird = bitmapHolder.birdMid;
+                break;
+            case DOWN:
+                bird = bitmapHolder.birdDown;
+                break;
+        }
+
+        canvas.drawBitmap(
+                bird,
+                null,
+                gameState.getBirdRect(),
+                paint
+        );
+    }
+
     @Override
     public void onClick(View view) {
+        gameModel.onTap();
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         this.holder = holder;
         ticker.start();
+
+        final Rect size = holder.getSurfaceFrame();
+        gameModel.height = size.height();
+        gameModel.width = size.width();
     }
 
     @Override

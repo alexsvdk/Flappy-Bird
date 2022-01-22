@@ -5,7 +5,7 @@ import android.graphics.Rect;
 public interface GameState {
 
     enum BirdFlap {
-        UP, MID, DONW
+        UP, MID, DOWN
     }
 
     /// Птичка
