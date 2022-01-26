@@ -11,12 +11,17 @@ public class BitmapHolder {
     public Bitmap birdMid;
     public Bitmap birdUp;
 
+    public Bitmap pipeGreen;
+
     void init(Context context){
         final Resources res = context.getResources();
 
         birdDown = BitmapFactory.decodeResource(res, R.drawable.bluebird_downflap);
         birdMid = BitmapFactory.decodeResource(res, R.drawable.bluebird_midflap);
         birdUp = BitmapFactory.decodeResource(res, R.drawable.bluebird_upflap);
+
+        pipeGreen = BitmapFactory.decodeResource(res, R.drawable.pipe_green);
+
     }
 
 }

@@ -3,6 +3,7 @@ package ru.a1exs.flappybird;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.SurfaceHolder;
@@ -38,9 +39,32 @@ public class GameEngine implements View.OnClickListener, SurfaceHolder.Callback 
         canvas.drawColor(Color.BLACK);
 
         drawBird(canvas, gameState);
+        drawPipes(canvas, gameState);
 
 
         holder.unlockCanvasAndPost(canvas);
+    }
+
+    private void drawPipes(Canvas canvas, GameState gameState) {
+        final GameState.PipeModel[] pipes = gameState.getPipes();
+
+        for (GameState.PipeModel pipe : pipes) {
+            Rect pipeUp = new Rect(
+                    (int) (pipe.x - GameState.PipeModel.width / 2),
+                    0,
+                    (int) (pipe.x + GameState.PipeModel.width / 2),
+                    (int) (pipe.y - pipe.spaceHeight / 2)
+            );
+            Rect pipeDown = new Rect(
+                    (int) (pipe.x - GameState.PipeModel.width / 2),
+                    (int) (pipe.y + pipe.spaceHeight / 2),
+                    (int) (pipe.x + GameState.PipeModel.width / 2),
+                    canvas.getHeight()
+            );
+
+            canvas.drawBitmap(bitmapHolder.pipeGreen, null, pipeUp, paint);
+            canvas.drawBitmap(bitmapHolder.pipeGreen, null, pipeDown, paint);
+        }
     }
 
     private void drawBird(Canvas canvas, GameState gameState) {
@@ -58,12 +82,7 @@ public class GameEngine implements View.OnClickListener, SurfaceHolder.Callback 
                 break;
         }
 
-        canvas.drawBitmap(
-                bird,
-                null,
-                gameState.getBirdRect(),
-                paint
-        );
+        canvas.drawBitmap(bird, null, gameState.getBirdRect(), paint);
     }
 
     @Override
